@@ -1,12 +1,17 @@
-var admin = require("firebase-admin");
+import admin from "firebase-admin"; //imports firebase library of tools
 
-var serviceAccount = require("./credentials.json");
+import serviceAccount from "./credentials.js"; //import our credentials to connect to Firebase
 
 admin.initializeApp({
+  //connects to our firebase project
   credential: admin.credential.cert(serviceAccount),
-});
+}); //Creating a cerificate from out credentials
 
-const db = admin.firestore();
+// Now we are connected to OUR Firebase project & related services
+
+const db = admin.firestore(); // creates a shortcut to access the Firestore database
+
+const restaurantsCol = db.collection("restaurants"); //shortcut to point to our collection
 
 const restaurant = {
   name: "Mister 01",
@@ -14,12 +19,12 @@ const restaurant = {
   cuisine: "Pizza",
   rating: 4.9,
   phone_number: "(786) 677-2903",
-}; //creates an object of a collection of data to add
+}; //creates an object-- in this case a specific restaurant we want to add to our database
 
-// db.collection("restaurant")
-//   .add(restaurant)
-//   .then((doc) => console.log("Created restaurant", doc.id))
-//   .catch((err) => console.error(err));
+restaurantsCol
+  .add(restaurant) // adding the restaurant to our restaurants collection
+  .then((doc) => console.log("Created restaurant", doc.id)) //handle resolve
+  .catch((err) => console.error(err)); // handle reject
 
 const restaurant2 = {
   name: "Bolay",
@@ -28,12 +33,12 @@ const restaurant2 = {
   rating: 4.6,
 };
 
-async function addRestaurant() {
+async function addRestaurant(data) {
   try {
-    const doc = await db.collection("restaurants").add(restaurant2);
-    console.log("Created restaurant", doc.id);
+    const doc = await restaurantsCol.add(data); // add restauarnt to collection
+    console.log("Created restaurant", doc.id); // handle resolve
   } catch (err) {
-    console.error(err);
+    console.error(err); // handle reject
   }
 }
 
